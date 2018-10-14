@@ -19,12 +19,22 @@ app.get("/", function (req, res) {
 });
 
 
-// your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
+app.get("/api/timestamp/:date_string?", function (req, res) {
+  let date, date_string = req.params.date_string;
+  console.log(Number.isInteger(date_string));
+  if (typeof date_string == 'undefined') {
+    // set date to current date
+    date = new Date();
+  } else if (isNaN(date_string)) {
+    // parse passed in date
+    date = new Date(date_string);
+  } else {
+    // convert to number and then parse date
+    date = new Date(Number.parseInt(date_string));
+  }
+
+  res.json({unix: date.getTime(), utc: date.toUTCString()});
 });
-
-
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
